@@ -166,6 +166,7 @@ dist
 .pio
 .vscode
 water-level-monitoring-subsystem/.gitignore
+water-channel-controller/.gitignore
 
 # Local History for Visual Studio Code
 .history/
