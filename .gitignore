@@ -165,6 +165,7 @@ dist
 # PlatformIO
 .pio
 .vscode
+water-level-monitoring-subsystem/.gitignore
 
 # Local History for Visual Studio Code
 .history/
