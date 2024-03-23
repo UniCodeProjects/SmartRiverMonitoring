@@ -57,3 +57,21 @@ function updateStatusBadge(state) {
             break;
     }
 }
+
+function toggleValveOpeningInput(show = true) {
+    const numberInput = document.getElementById('valve-opening-input');
+    numberInput.value = document.getElementById('valve-range').value;
+    const modalElement = document.getElementById('valve-value-modal');
+    if (show) {
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        // If there is no instance of the modal, create a new one.
+        if (modal == null) {
+            new bootstrap.Modal(modalElement).show();
+        } else {
+            modal.show();
+        }
+    } else {
+        const modal = bootstrap.Modal.getInstance(modalElement);
+        modal.hide();
+    }
+}
