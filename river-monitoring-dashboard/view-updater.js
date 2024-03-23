@@ -75,3 +75,15 @@ function toggleValveOpeningInput(show = true) {
         modal.hide();
     }
 }
+
+function saveModalChanges(value) {
+    var valveOpeningInput = document.getElementById('valve-opening-input');
+    if (!valveOpeningInput.checkValidity()) {
+        toggleValveOpeningInput(false);
+        new bootstrap.Toast(document.getElementById('invalid-input-toast')).show();
+        return;   
+    }
+    updateProgressBar(value);
+    setRangeValue(value);
+    toggleValveOpeningInput(false);
+}
