@@ -39,6 +39,10 @@ function toggleManualMode() {
     const isManual = document.getElementById('manual-mode-switch').checked;
     if (isManual) {
         setControlMode(ControlMode.Manual);
+        // Showing range tooltip.
+        const tooltip = new bootstrap.Tooltip(document.getElementById('valve-range'), { trigger: 'manual' });
+        tooltip.show();
+        setTimeout(_ => tooltip.hide(), 4000);
     } else {
         setControlMode(ControlMode.Automatic);
     }
