@@ -8,3 +8,5 @@ async function getArduinoPort() {
     }
     return filtered;
 }
+
+module.exports = { getArduinoPort }
