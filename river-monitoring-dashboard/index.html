@@ -54,6 +54,12 @@
                 <div class="progress-bar" style="width: 0%" id="valve-bar">0%</div>
               </div>
               <input type="range" class="form-range" min="0" max="100" step="1" id="valve-range" oninput="updateProgressBar(value)" ondblclick="toggleValveOpeningInput()">
+              <div class="d-flex justify-content-end">
+                <div class="form-check form-switch pt-3">
+                  <input class="form-check-input" type="checkbox" role="switch" id="manual-mode-switch">
+                  <label class="form-check-label" for="manual-mode-switch">Manual</label>
+                </div>
+              </div>
               <div class="modal fade" id="valve-value-modal" tabindex="-1" aria-labelledby="valveValueModal" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
