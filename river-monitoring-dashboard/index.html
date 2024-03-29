@@ -56,7 +56,7 @@
               <input type="range" class="form-range" min="0" max="100" step="1" id="valve-range" oninput="updateProgressBar(value)" ondblclick="toggleValveOpeningInput()">
               <div class="d-flex justify-content-end">
                 <div class="form-check form-switch pt-3">
-                  <input class="form-check-input" type="checkbox" role="switch" id="manual-mode-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" id="manual-mode-switch" onclick="toggleManualMode()">
                   <label class="form-check-label" for="manual-mode-switch">Manual</label>
                 </div>
               </div>

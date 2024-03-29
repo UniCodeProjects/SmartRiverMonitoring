@@ -6,11 +6,42 @@ const SystemState = {
     AlarmTooHighCritic: 'ALARM-TOO-HIGH-CRITIC'
 }
 
+const ControlMode = {
+    Automatic: 'Automatic',
+    Manual: 'Manual'
+}
+
 function initComponents() {
     const initialValue = 0;    // TODO: get actual value.
     updateProgressBar(initialValue);
     setRangeValue(initialValue);
     // updateStatusBadge(SystemState.Normal);   // TODO: use actual value.
+    setControlMode();
+}
+
+function setControlMode(mode = ControlMode.Automatic) {
+    switch (mode) {
+        case ControlMode.Automatic:
+            document.getElementById('valve-range').disabled = true;
+            document.getElementById('manual-mode-switch').checked = false;
+            break;
+        case ControlMode.Manual:
+            document.getElementById('valve-range').disabled = false;
+            document.getElementById('manual-mode-switch').checked = true;
+            break;
+        default:
+            console.error("Unknown control mode: ", mode);
+            break;
+    }
+}
+
+function toggleManualMode() {
+    const isManual = document.getElementById('manual-mode-switch').checked;
+    if (isManual) {
+        setControlMode(ControlMode.Manual);
+    } else {
+        setControlMode(ControlMode.Automatic);
+    }
 }
 
 function setRangeValue(value) {
