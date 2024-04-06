@@ -6,7 +6,7 @@ async function getArduinoPort() {
     if (filtered.length === 0) {
         throw new Error("Arduino port not found");
     }
-    return filtered;
+    return filtered[0].path;
 }
 
 module.exports = { getArduinoPort }
