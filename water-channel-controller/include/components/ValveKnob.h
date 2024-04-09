@@ -1,6 +1,8 @@
 #ifndef VALVE_KNOB_H
 #define VALVE_KNOB_H
 
+#define VALVE_KNOB_LEVELS 100
+
 /// @brief Class that represents the knob used to control the river valve.
 class ValveKnob {
    public:

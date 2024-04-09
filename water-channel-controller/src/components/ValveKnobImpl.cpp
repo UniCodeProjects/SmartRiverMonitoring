@@ -1,7 +1,5 @@
 #include "../include/components/ValveKnobImpl.h"
 
-#define VALVE_KNOB_LEVELS 100
-
 ValveKnobImpl::ValveKnobImpl(Potentiometer* const potentiometer) {
     this->potentiometer = potentiometer;
 }
