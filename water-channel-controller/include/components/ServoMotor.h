@@ -1,6 +1,9 @@
 #ifndef SERVO_MOTOR_H
 #define SERVO_MOTOR_H
 
+#define SERVO_MIN_ANGLE 0
+#define SERVO_MAX_ANGLE 179
+
 /// @brief Class that represents a generic servo motor.
 class ServoMotor {
    public:

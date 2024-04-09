@@ -7,7 +7,7 @@
 class PotentiometerImpl : public Potentiometer {
    public:
     /// @brief Default constructor.
-    /// @param pin the pin in which the potentiometer is plugged in.
+    /// @param pin the pin in which the potentiometer is plugged in. The pin must be an analog pin.
     PotentiometerImpl(const int pin);
 
     int readValue();
