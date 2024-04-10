@@ -35,7 +35,7 @@ function serialWrite(port, content) {
         if (!content.endsWith('\n')) {
             content += '\n';
         }
-        actualPort.write(content);
+        actualPort.write(content, 'ascii');
     });
 }
 
