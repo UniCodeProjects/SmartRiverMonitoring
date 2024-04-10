@@ -22,18 +22,20 @@ function serialWrite(port, content) {
     });
 }
 
-function serialRead(port, callback) {
-    let buffer = '';
-    port.then(actualPort => {
-        const onDataReceived = data => {
-            buffer += data.toString();
-            if (buffer.endsWith('\n')) {
-                callback(buffer);
-                actualPort.off('data', onDataReceived);
-            }
-        }
-        actualPort.on('data', onDataReceived);
-    })
+function serialRead(port) {
+    return new Promise((resolve, reject) => {
+        let buffer = '';
+        port.then(actualPort => {
+            const onDataReceived = data => {
+                buffer += data.toString();
+                if (buffer.endsWith('\n')) {
+                    resolve(buffer);
+                    actualPort.off('data', onDataReceived);
+                }
+            };
+            actualPort.on('data', onDataReceived);
+        }).catch(error => reject(error));
+    });
 }
 
 module.exports = { getArduinoPort, serialWrite, serialRead }
