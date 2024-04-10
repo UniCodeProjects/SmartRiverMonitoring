@@ -1,5 +1,5 @@
 const { autoDetect } = require('@serialport/bindings-cpp');
-const { SerialPort } = require('serialport');
+const { SerialPort, ReadyParser } = require('serialport');
 
 /**
  * Detects the serial port where Arduino is plugged in.
@@ -35,7 +35,8 @@ function serialWrite(port, content) {
         if (!content.endsWith('\n')) {
             content += '\n';
         }
-        actualPort.write(content, 'ascii');
+        const parser = actualPort.pipe(new ReadyParser({ delimiter: "ARDUINO_READY" }));
+        parser.on('ready', _ => actualPort.write(content, 'ascii'));
     });
 }
 
