@@ -1,6 +1,4 @@
 #include <Arduino.h>
-#include <PubSubClient.h>
-#include <WiFi.h>
 
 #include "../include/components/LedImpl.h"
 #include "../include/WifiUtils.h"
@@ -38,7 +36,8 @@ void ledTask(void* parameters) {
 
 void callback(char* topic, byte* payload, unsigned int length) {
     Serial.println("Message arrived on topic: " + String(topic));
-    Serial.println("Message length: " + length);
+    Serial.print("Message length:");
+    Serial.println(length);
 }
 
 void reconnectionTask(void* parameters) {
