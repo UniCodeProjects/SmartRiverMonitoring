@@ -4,6 +4,7 @@ const SystemState = require("./system-state");
 
 const client = mqtt.connect("mqtt://broker.mqtt-dashboard.com");
 const waterLevelTopic = "water-level";
+const samplePeriodTopic = "sample-period";
 
 client.on("connect", () => {
     client.subscribe(waterLevelTopic, err => {
@@ -22,16 +23,16 @@ client.on("message", (topic, message) => {
         throw new Error(`Received water level was NaN: ${message}`);
     }
     if (currentWaterLevel >= WaterLevel.WL1 && currentWaterLevel <= WaterLevel.WL2) {
-        client.publish(waterLevelTopic, SystemState.Normal.samplePeriod);
+        client.publish(samplePeriodTopic, SystemState.Normal.samplePeriod);
     } else if (currentWaterLevel < WaterLevel.WL1) {
-        client.publish(waterLevelTopic, SystemState.AlarmTooLow.samplePeriod);
+        client.publish(samplePeriodTopic, SystemState.AlarmTooLow.samplePeriod);
     } else if (currentWaterLevel > WaterLevel.WL2) {
         if (currentWaterLevel <= WaterLevel.WL3) {
-            client.publish(waterLevelTopic, SystemState.PreAlarmTooHigh.samplePeriod);
+            client.publish(samplePeriodTopic, SystemState.PreAlarmTooHigh.samplePeriod);
         } else if (currentWaterLevel > WaterLevel.WL3 && currentWaterLevel <= WaterLevel.WL4) {
-            client.publish(waterLevelTopic, SystemState.AlarmTooHigh.samplePeriod);
+            client.publish(samplePeriodTopic, SystemState.AlarmTooHigh.samplePeriod);
         } else if (currentWaterLevel > WaterLevel.WL4) {
-            client.publish(waterLevelTopic, SystemState.AlarmTooHighCritic.samplePeriod);
+            client.publish(samplePeriodTopic, SystemState.AlarmTooHighCritic.samplePeriod);
         }
     }
 });
