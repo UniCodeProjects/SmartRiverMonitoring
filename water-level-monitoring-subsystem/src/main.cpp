@@ -43,7 +43,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 void reconnectionTask(void* parameters) {
     while (true) {
         if (!connectionWorks) {
-            setupWifi(WIFI_SSID, WIFI_PASSWORD);
+            connectToWiFi(WIFI_SSID, WIFI_PASSWORD);
             connect(SUBSCRIBE_TOPIC);
             connectionWorks = isConnectedToWiFi() && isConnectedToMqttBroker();
         }
@@ -58,7 +58,7 @@ void setup() {
     Serial.println("Executing...");
     randomSeed(analogRead(4));
 
-    setupWifi(WIFI_SSID, WIFI_PASSWORD);
+    connectToWiFi(WIFI_SSID, WIFI_PASSWORD);
     setupMqtt(MQTT_BROKER, MQTT_PORT, callback);
     connect(SUBSCRIBE_TOPIC);
     connectionWorks = isConnectedToWiFi() && isConnectedToMqttBroker();

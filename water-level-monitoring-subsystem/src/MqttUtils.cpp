@@ -1,7 +1,6 @@
 #include "../include/MqttUtils.h"
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include <Arduino.h>
 
 #define MAX_ATTEMPTS 3
 #define MQTT_CONNECTION_DELTA_MILLIS 5000
