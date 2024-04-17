@@ -3,7 +3,7 @@
 #include <PubSubClient.h>
 #include <Arduino.h>
 
-#define MQTT_CONNECTION_TIMEOUT_MILLIS 15000
+#define MAX_ATTEMPTS 3
 #define MQTT_CONNECTION_DELTA_MILLIS 5000
 
 static WiFiClient wifiClient;
@@ -17,17 +17,17 @@ void setupMqtt(const char* serverName, const uint16_t port, void (*callback)(cha
 }
 
 void connect(const char* subscribeTopic) {
-    int timeElapsedMillis = 0;
+    int attempts = 0;
     do {
         if (mqttClient.connect((String("river-water-level-monitor-client") + String(random(0xFFFF), HEX)).c_str())) {
             if (subscribeTopic != NULL) {
                 mqttClient.subscribe(subscribeTopic);
             }
         } else {
-            timeElapsedMillis += MQTT_CONNECTION_DELTA_MILLIS;
+            attempts++;
             delay(MQTT_CONNECTION_DELTA_MILLIS);
         }
-    } while (!mqttClient.connected() && timeElapsedMillis < MQTT_CONNECTION_TIMEOUT_MILLIS);
+    } while (!mqttClient.connected() && attempts == MAX_ATTEMPTS);
 }
 
 bool publish(const char* topic, const char* payload, const bool retained) {
