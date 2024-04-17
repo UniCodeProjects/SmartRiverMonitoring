@@ -1,4 +1,6 @@
 #include <Arduino.h>
+#include "components/Sonar.h"
+#include "components/SonarImpl.h"
 
 #include "../include/components/LedImpl.h"
 #include "../include/WifiUtils.h"
@@ -12,6 +14,7 @@
 
 Led* const redLed = new LedImpl(1);
 Led* const greenLed = new LedImpl(2);
+Sonar* const sonar = new SonarImpl(4, 5);
 bool connectionWorks;
 
 void keepConnectionTask(void* parameters) {
@@ -38,6 +41,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.println("Message arrived on topic: " + String(topic));
     Serial.print("Message length:");
     Serial.println(length);
+    String msg;
+    for (int i = 0; i < length; i++) {
+        msg += String((char) payload[i]);
+    }
+    Serial.println(msg);
 }
 
 void reconnectionTask(void* parameters) {
@@ -48,6 +56,13 @@ void reconnectionTask(void* parameters) {
             connectionWorks = isConnectedToWiFi() && isConnectedToMqttBroker();
         }
         vTaskDelay(pdMS_TO_TICKS(500));
+    }
+}
+
+void waterSamplingTask(void* parameters) {
+    while (true) {
+        Serial.println(String(sonar->getDistance()));
+        delay(100);
     }
 }
 
@@ -65,6 +80,7 @@ void setup() {
     xTaskCreate(ledTask, "ledTask", 1000, NULL, 1, NULL);
     xTaskCreate(keepConnectionTask, "keepConnectionTask", 10000, NULL, 3, NULL);
     xTaskCreate(reconnectionTask, "reconnectionTask", 10000, NULL, 1, NULL);
+    // xTaskCreate(waterSamplingTask, "waterSamplingTask", 10000, NULL, 1, NULL);
 }
 
 void loop() {
