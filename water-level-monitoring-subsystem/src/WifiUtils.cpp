@@ -6,7 +6,7 @@
 
 static bool isModeSet = false;
 
-void setupWifi(const char* ssid, const char* password) {
+void connectToWiFi(const char* ssid, const char* password) {
     int attempts = 0;
     if (!isModeSet) {
         WiFi.mode(WIFI_STA);
