@@ -38,9 +38,11 @@ void ledTask(void* parameters) {
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
+#ifdef DEBUG
     Serial.println("Message arrived on topic: " + String(topic));
     Serial.print("Message length:");
     Serial.println(length);
+#endif
     String msg;
     for (int i = 0; i < length; i++) {
         msg += String((char) payload[i]);
@@ -68,9 +70,6 @@ void waterSamplingTask(void* parameters) {
 
 void setup() {
     Serial.begin(SERIAL_BAUD_RATE);
-    Serial.println("Preparing to execute...");
-    delay(4000);
-    Serial.println("Executing...");
     randomSeed(analogRead(4));
 
     connectToWiFi(WIFI_SSID, WIFI_PASSWORD);
@@ -84,7 +83,6 @@ void setup() {
 }
 
 void loop() {
-    Serial.println("Publishing a message on broker...");
     publish(SUBSCRIBE_TOPIC, "Hi", false);
     delay(10000);
 }
