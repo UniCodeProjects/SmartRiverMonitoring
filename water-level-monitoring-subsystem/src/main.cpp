@@ -8,7 +8,7 @@
 #include "../include/MqttUtils.h"
 
 #define SERIAL_BAUD_RATE 115200
-#define SUBSCRIBE_TOPIC "sampleTopic"
+#define SAMPLE_PERIOD_TOPIC "sample-period"
 #define MQTT_BROKER "broker.mqtt-dashboard.com"
 
 char* wifi_ssid;
@@ -17,6 +17,7 @@ Led* const redLed = new LedImpl(1);
 Led* const greenLed = new LedImpl(2);
 Sonar* const sonar = new SonarImpl(4, 5);
 bool connectionWorks;
+String receivedMessage;
 
 void keepConnectionTask(void* parameters) {
     while (true) {
@@ -38,24 +39,30 @@ void ledTask(void* parameters) {
     }
 }
 
-void callback(char* topic, byte* payload, unsigned int length) {
+void onMessageReceived(char* topic, byte* payload, unsigned int length) {
 #ifdef DEBUG
     Serial.println("Message arrived on topic: " + String(topic));
     Serial.print("Message length:");
     Serial.println(length);
 #endif
-    String msg;
+    receivedMessage = "";
     for (int i = 0; i < length; i++) {
-        msg += String((char) payload[i]);
+        receivedMessage += String((char) payload[i]);
     }
-    Serial.println(msg);
+}
+
+String getMessage() {
+    if (!receivedMessage.endsWith("\n")) {
+        return "";
+    }
+    return receivedMessage;
 }
 
 void reconnectionTask(void* parameters) {
     while (true) {
         if (!connectionWorks) {
             connectToWiFi(wifi_ssid, wifi_password);
-            connect(SUBSCRIBE_TOPIC);
+            connect(SAMPLE_PERIOD_TOPIC);
             connectionWorks = isConnectedToWiFi() && isConnectedToMqttBroker();
         }
         vTaskDelay(pdMS_TO_TICKS(500));
@@ -101,16 +108,21 @@ void setup() {
 
     readEnv();
     connectToWiFi(wifi_ssid, wifi_password);
-    setupMqtt(MQTT_BROKER, MQTT_PORT, callback);
-    connect(SUBSCRIBE_TOPIC);
+    setupMqtt(MQTT_BROKER, MQTT_PORT, onMessageReceived);
+    connect(SAMPLE_PERIOD_TOPIC);
     connectionWorks = isConnectedToWiFi() && isConnectedToMqttBroker();
     xTaskCreate(ledTask, "ledTask", 1000, NULL, 1, NULL);
     xTaskCreate(keepConnectionTask, "keepConnectionTask", 10000, NULL, 3, NULL);
     xTaskCreate(reconnectionTask, "reconnectionTask", 10000, NULL, 1, NULL);
     // xTaskCreate(waterSamplingTask, "waterSamplingTask", 10000, NULL, 1, NULL);
+
+    // TODO: add explaination.
+    // while (getMessage().isEmpty());
+    // String msg = getMessage();
+    // msg.remove(msg.length() - 1);
+    // uint32_t samplingPeriod = msg.toInt();
+    // Serial.println(samplingPeriod + 1);
 }
 
 void loop() {
-    publish(SUBSCRIBE_TOPIC, "Hi", false);
-    delay(10000);
 }
