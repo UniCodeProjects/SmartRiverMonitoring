@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "SPIFFS.h"
 #include "components/Sonar.h"
 #include "components/SonarImpl.h"
 
@@ -8,10 +9,10 @@
 
 #define SERIAL_BAUD_RATE 115200
 #define SUBSCRIBE_TOPIC "sampleTopic"
-#define WIFI_SSID "" // TODO: set the ssid with the proper one
-#define WIFI_PASSWORD "" // TODO: set the password with the proper one
 #define MQTT_BROKER "broker.mqtt-dashboard.com"
 
+char* wifi_ssid;
+char* wifi_password;
 Led* const redLed = new LedImpl(1);
 Led* const greenLed = new LedImpl(2);
 Sonar* const sonar = new SonarImpl(4, 5);
@@ -53,7 +54,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 void reconnectionTask(void* parameters) {
     while (true) {
         if (!connectionWorks) {
-            connectToWiFi(WIFI_SSID, WIFI_PASSWORD);
+            connectToWiFi(wifi_ssid, wifi_password);
             connect(SUBSCRIBE_TOPIC);
             connectionWorks = isConnectedToWiFi() && isConnectedToMqttBroker();
         }
@@ -68,11 +69,38 @@ void waterSamplingTask(void* parameters) {
     }
 }
 
+void readEnv() {
+    if (!SPIFFS.begin(true)) {
+        Serial.println("An Error has occurred while mounting SPIFFS");
+        return;
+    }
+    File file = SPIFFS.open("/.env");
+    if (!file) {
+        Serial.println("Failed to open file for reading");
+        return;
+    }
+    while (file.available()) {
+        String line = file.readStringUntil('\n');
+        int indexOfSeparator = line.indexOf('=');
+        String var_name = line.substring(0, indexOfSeparator);
+        String var_value = line.substring(indexOfSeparator + 1, line.length());
+        if (var_name == "WIFI_SSID") {
+            wifi_ssid = (char*)malloc(sizeof(char) * var_value.length() + 1);
+            var_value.toCharArray(wifi_ssid, var_value.length() + 1);
+        } else {
+            wifi_password = (char*)malloc(sizeof(char) * var_value.length() + 1);
+            var_value.toCharArray(wifi_password, var_value.length() + 1);
+        }
+    }
+    file.close();
+}
+
 void setup() {
     Serial.begin(SERIAL_BAUD_RATE);
     randomSeed(analogRead(4));
 
-    connectToWiFi(WIFI_SSID, WIFI_PASSWORD);
+    readEnv();
+    connectToWiFi(wifi_ssid, wifi_password);
     setupMqtt(MQTT_BROKER, MQTT_PORT, callback);
     connect(SUBSCRIBE_TOPIC);
     connectionWorks = isConnectedToWiFi() && isConnectedToMqttBroker();
