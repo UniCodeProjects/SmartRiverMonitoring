@@ -12,6 +12,7 @@ client.on("connect", () => {
             throw err;
         }
     });
+    client.publish(samplePeriodTopic, SystemState.Normal.samplePeriod + '\n', { retain: true });
 });
 
 client.on("message", (topic, message) => {
