@@ -9,13 +9,15 @@
 
 #define SERIAL_BAUD_RATE 115200
 #define SAMPLE_PERIOD_TOPIC "sample-period"
+#define WATER_LEVEL_TOPIC "water-level"
 #define MQTT_BROKER "broker.mqtt-dashboard.com"
 
 char* wifi_ssid;
 char* wifi_password;
 Led* const redLed = new LedImpl(1);
 Led* const greenLed = new LedImpl(2);
-Sonar* const sonar = new SonarImpl(4, 5);
+Sonar* const sonar = new SonarImpl(12, 13);
+uint32_t sonarSamplingPeriod = 0;
 bool connectionWorks;
 String receivedMessage;
 
@@ -71,8 +73,12 @@ void reconnectionTask(void* parameters) {
 
 void waterSamplingTask(void* parameters) {
     while (true) {
-        Serial.println(String(sonar->getDistance()));
-        delay(100);
+        const double waterLevel = sonar->getDistance();
+        publish(WATER_LEVEL_TOPIC, String(waterLevel).c_str(), false);
+        if (sonarSamplingPeriod <= 0) {
+            continue;
+        }
+        vTaskDelay(pdMS_TO_TICKS(sonarSamplingPeriod));
     }
 }
 
@@ -114,15 +120,19 @@ void setup() {
     xTaskCreate(ledTask, "ledTask", 1000, NULL, 1, NULL);
     xTaskCreate(keepConnectionTask, "keepConnectionTask", 10000, NULL, 3, NULL);
     xTaskCreate(reconnectionTask, "reconnectionTask", 10000, NULL, 1, NULL);
-    // xTaskCreate(waterSamplingTask, "waterSamplingTask", 10000, NULL, 1, NULL);
+    xTaskCreate(waterSamplingTask, "waterSamplingTask", 10000, NULL, 1, NULL);
 
-    // TODO: add explaination.
-    // while (getMessage().isEmpty());
-    // String msg = getMessage();
-    // msg.remove(msg.length() - 1);
-    // uint32_t samplingPeriod = msg.toInt();
-    // Serial.println(samplingPeriod + 1);
+    // Empty while loop to wait for the full expected message.
+    while (getMessage().isEmpty());
+    String msg = getMessage();
+    msg.remove(msg.length() - 1);
+    sonarSamplingPeriod = msg.toInt();
 }
 
 void loop() {
+    if (!getMessage().isEmpty()) {
+        String msg = getMessage();
+        msg.remove(msg.length() - 1);
+        sonarSamplingPeriod = msg.toInt();
+    }
 }
