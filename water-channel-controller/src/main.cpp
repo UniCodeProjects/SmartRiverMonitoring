@@ -9,6 +9,7 @@
 #include "../include/scheduler/Scheduler.h"
 #include "../include/task/AutomaticTask.h"
 #include "../include/task/ButtonTask.h"
+#include "../include/task/ManualTask.h"
 
 #define SERIAL_BAUD_RATE 9600
 
@@ -36,6 +37,7 @@ void setup() {
   scheduler.initialize(100);
   scheduler.addTask(new AutomaticTask(monitor, valve, 500));
   scheduler.addTask(new ButtonTask(button, 100));
+  scheduler.addTask(new ManualTask(valve, valveKnob, monitor, 500));
 }
 
 void loop() {
