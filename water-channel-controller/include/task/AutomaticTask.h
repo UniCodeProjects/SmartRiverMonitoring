@@ -7,6 +7,8 @@
 #include "../include/components/ValveKnob.h"
 #include "TaskImpl.h"
 
+extern bool isAutomaticMode;
+
 class AutomaticTask : public TaskImpl {
    public:
     AutomaticTask(LiquidCrystal_I2C* const monitor, Valve* const valve, const int period);
