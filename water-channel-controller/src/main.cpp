@@ -6,44 +6,34 @@
 #include "../include/components/ValveKnobImpl.h"
 #include "../include/components/PotentiometerImpl.h"
 #include "../include/components/ServoMotorImpl.h"
+#include "../include/scheduler/Scheduler.h"
+#include "../include/task/AutomaticTask.h"
 
 #define SERIAL_BAUD_RATE 9600
-// #define VALVE_SUBSYSTEM_TEST
-// #define BUTTON_TEST
 
-LiquidCrystal_I2C* lcd = new LiquidCrystal_I2C(0x27, 20, 4);
+LiquidCrystal_I2C* monitor = new LiquidCrystal_I2C(0x27, 20, 4);
 Button* const button = new ButtonImpl(2);
 ValveKnob* const valveKnob = new ValveKnobImpl(new PotentiometerImpl(A0));
 ServoMotor* const motor = new ServoMotorImpl(9);
 Valve* const valve = new ValveImpl(motor);
 
-bool isButtonPressed = false;
+Scheduler scheduler;
 
 void setup() {
   Serial.begin(SERIAL_BAUD_RATE);
-  #ifdef VALVE_SUBSYSTEM_TEST
-  lcd->init();
-  lcd->backlight();
+  /*
+   * This instruction is needed because Arduino resets when the server opens a serial connection with it.
+   * In this way, data will be lost because the device is not ready to receive them.
+   * This problem is worked around by letting Arduino send a ready sequence that the Node program waits for before writing.
+   */
+  Serial.println("ARDUINO_READY");
+  monitor->init();
+  monitor->backlight();
   motor->on();
-  #endif
+  scheduler.initialize(500);
+  scheduler.addTask(new AutomaticTask(monitor, valve, 500));
 }
 
 void loop() {
-  #ifdef VALVE_SUBSYSTEM_TEST
-  lcd->clear();
-  lcd->setCursor(3, 1);
-  const int level = valveKnob->getValveOpeningLevel();
-  lcd->print("Valve level: ");
-  lcd->print(level);
-  valve->setLevel(level);
-  delay(100);
-  #endif
-
-  #ifdef BUTTON_TEST
-  bool actualButtonStatus = button->isPressed();
-  if (actualButtonStatus != isButtonPressed) {
-    isButtonPressed = actualButtonStatus;
-    Serial.println(isButtonPressed ? "Pressed" : "Not pressed");
-  }
-  #endif
+  scheduler.tick();
 }
