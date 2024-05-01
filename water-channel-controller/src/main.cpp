@@ -21,8 +21,6 @@ Valve* const valve = new ValveImpl(motor);
 
 Scheduler scheduler;
 
-bool isAutomaticMode = true;
-
 void setup() {
   Serial.begin(SERIAL_BAUD_RATE);
   /*
