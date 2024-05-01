@@ -66,6 +66,6 @@ function saveModalChanges(value) {
         return;   
     }
     updateProgressBar(value);
-    setRangeValue(value);
+    $('#valve-range').val(value);
     toggleValveOpeningInput(false);
 }
