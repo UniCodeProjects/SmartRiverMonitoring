@@ -4,8 +4,6 @@
 #include "../components/Button.h"
 #include "TaskImpl.h"
 
-extern bool isAutomaticMode;
-
 class ButtonTask : public TaskImpl {
    public:
     ButtonTask(Button* const button, const int period);
