@@ -9,6 +9,7 @@ const port = 3000;
 const client = mqtt.connect("mqtt://broker.mqtt-dashboard.com");
 const waterLevelTopic = "water-level";
 const samplePeriodTopic = "sample-period";
+let currentSystemState = null;
 
 // Server setup.
 server.set('view engine', 'ejs');
@@ -22,6 +23,10 @@ server.listen(port, _ => {
 server.get('/', (req, res) => {
     res.render('index', { status: SystemState.Normal.Badge, progress: 0, range: 0 })
 })
+
+server.get('/update', (req, res) => {
+    res.json({ update: currentSystemState })
+});
 
 // MQTT setup.
 client.on("connect", () => {
@@ -43,20 +48,20 @@ client.on("message", (topic, message) => {
     }
     if (currentWaterLevel >= WaterLevel.WL1 && currentWaterLevel <= WaterLevel.WL2) {
         client.publish(samplePeriodTopic, `${SystemState.Normal.samplePeriod}\n`);
-        server.get('/update', (req, res) => res.json({ update: SystemState.Normal.Badge }))
+        currentSystemState = SystemState.Normal.Badge;
     } else if (currentWaterLevel < WaterLevel.WL1) {
         client.publish(samplePeriodTopic, `${SystemState.AlarmTooLow.samplePeriod}\n`);
-        server.get('/update', (req, res) => res.json({ update: SystemState.AlarmTooLow.Badge }))
+        currentSystemState = SystemState.AlarmTooLow.Badge;
     } else if (currentWaterLevel > WaterLevel.WL2) {
         if (currentWaterLevel <= WaterLevel.WL3) {
             client.publish(samplePeriodTopic, `${SystemState.PreAlarmTooHigh.samplePeriod}\n`);
-            server.get('/update', (req, res) => res.json({ update: SystemState.PreAlarmTooHigh.Badge }))
+            currentSystemState = SystemState.PreAlarmTooHigh.Badge;
         } else if (currentWaterLevel > WaterLevel.WL3 && currentWaterLevel <= WaterLevel.WL4) {
             client.publish(samplePeriodTopic, `${SystemState.AlarmTooHigh.samplePeriod}\n`);
-            server.get('/update', (req, res) => res.json({ update: SystemState.AlarmTooHigh.Badge }))
+            currentSystemState = SystemState.AlarmTooHigh.Badge;
         } else if (currentWaterLevel > WaterLevel.WL4) {
             client.publish(samplePeriodTopic, `${SystemState.AlarmTooHighCritic.samplePeriod}\n`);
-            server.get('/update', (req, res) => res.json({ update: SystemState.AlarmTooHighCritic.Badge }))
+            currentSystemState = SystemState.AlarmTooHighCritic.Badge;
         }
     }
 });
