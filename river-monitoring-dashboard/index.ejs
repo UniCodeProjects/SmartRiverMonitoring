@@ -124,10 +124,10 @@
                 })
                 .done(data => {
                     $('#status-text').html(data.update.icon + data.update.name)
-                    $('#status-badge').removeClass('<%= status.style %>').addClass(data.update.style)
+                    $('#status-badge').attr('class', `badge border border-2 rounded-pill ${data.update.style}`)
                 })
             }
-            setInterval(update, 5000)
+            setInterval(update, 1000)
         })
     </script>
 </body>
