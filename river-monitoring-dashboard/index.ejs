@@ -55,12 +55,14 @@
                             Valve controls
                         </h5>
                         <label for="valve-bar" class="form-label">Valve opening level:</label>
-                        <div class="progress" role="progressbar" aria-valuenow=<%= progress %>" aria-valuemin="0"
+                        <div class="progress" role="progressbar" aria-valuenow=<%=progress %>" aria-valuemin="0"
                             aria-valuemax="100">
-                            <div class="progress-bar" style="width: <%= progress %>%" id="valve-bar"><%= progress %>%</div>
+                            <div class="progress-bar" style="width: <%= progress %>%" id="valve-bar">
+                                <%= progress %>%
+                            </div>
                         </div>
-                        <input type="range" disabled="true" class="form-range" min="0" max="100" step="1" value="<%= range %>" id="valve-range"
-                            data-bs-toggle="tooltip" data-bs-placement="left"
+                        <input type="range" disabled="true" class="form-range" min="0" max="100" step="1"
+                            value="<%= range %>" id="valve-range" data-bs-toggle="tooltip" data-bs-placement="left"
                             data-bs-title="Double click to insert a specific value" oninput="updateProgressBar(value)"
                             ondblclick="toggleValveOpeningInput()">
                         <div class="d-flex justify-content-end">
@@ -70,24 +72,30 @@
                                 <label class="form-check-label" for="manual-mode-switch">Manual</label>
                             </div>
                         </div>
-                        <div class="modal fade" id="valve-value-modal" tabindex="-1" aria-labelledby="valveValueModal" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="valveValueModal">Set valve opening value</h1>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body input-group">
-                      <span class="input-group-text">%</span>
-                      <input id="valve-opening-input" type="number" class="form-control" aria-valuenow="0" min="0" max="100" required pattern="[0-9]+">
-                    </div>
-                    <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                      <button type="button" class="btn btn-primary" onclick="saveModalChanges(document.getElementById('valve-opening-input').value)">Save changes</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                        <div class="modal fade" id="valve-value-modal" tabindex="-1" aria-labelledby="valveValueModal"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="valveValueModal">Set valve opening value</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body input-group">
+                                        <span class="input-group-text">%</span>
+                                        <input id="valve-opening-input" type="number" class="form-control"
+                                            aria-valuenow="0" min="0" max="100" required pattern="[0-9]+">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary"
+                                            onclick="saveModalChanges(document.getElementById('valve-opening-input').value)">Save
+                                            changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
