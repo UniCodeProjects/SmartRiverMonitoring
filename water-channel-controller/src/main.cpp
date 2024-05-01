@@ -8,7 +8,7 @@
 #include "../include/components/ServoMotorImpl.h"
 #include "../include/scheduler/Scheduler.h"
 #include "../include/task/AutomaticTask.h"
-#include "../include/task/ButtonTask.h"
+#include "../include/task/ModeSwitchTask.h"
 #include "../include/task/ManualTask.h"
 
 #define SERIAL_BAUD_RATE 9600
@@ -31,10 +31,16 @@ void setup() {
   Serial.println("ARDUINO_READY");
   monitor->init();
   monitor->backlight();
+  monitor->setCursor(2, 0);
+  monitor->print("Mode: AUTOMATIC");
+  monitor->setCursor(3, 2);
+  monitor->print("Valve opening");
+  monitor->setCursor(5, 3);
+  monitor->print("level: ");
   motor->on();
   scheduler.initialize(100);
   scheduler.addTask(new AutomaticTask(monitor, valve, 500));
-  scheduler.addTask(new ButtonTask(button, 100));
+  scheduler.addTask(new ModeSwitchTask(button, monitor, 100));
   scheduler.addTask(new ManualTask(valve, valveKnob, monitor, 500));
 }
 
