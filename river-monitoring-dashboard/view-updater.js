@@ -11,14 +11,6 @@ const ControlMode = {
     Manual: 'Manual'
 }
 
-function initComponents() {
-    const initialValue = 0;    // TODO: get actual value.
-    updateProgressBar(initialValue);
-    setRangeValue(initialValue);
-    // updateStatusBadge(SystemState.Normal);   // TODO: use actual value.
-    setControlMode();
-}
-
 function setControlMode(mode = ControlMode.Automatic) {
     switch (mode) {
         case ControlMode.Automatic:

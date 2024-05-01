@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SmartRiverMonitoring - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="view-updater.js"></script>
+</head>
+
+<body>
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-droplet-half p-2 fs-4 text-primary-emphasis"></i>
+                <span class="fw-bold">SmartRiverMonitoring</span>
+                <span class="fw-light">Dashboard</span>
+            </a>
+            <span id="status-badge" class="badge border border-2 rounded-pill <%= status.style %>">
+                <span id="status-text" class="p-1"><%- status.icon %>
+                        <%= status.name %></span>
+            </span>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row p-4 align-items-start">
+            <div class="col-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">
+                            <i class="bi bi-moisture p-1"></i>
+                            Water level trend
+                        </h5>
+                        <div>
+                            <canvas id="myChart" height="400"></canvas>
+                            <script src="chart-sample.js"></script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">
+                            <i class="bi bi-tools p-1"></i>
+                            Valve controls
+                        </h5>
+                        <label for="valve-bar" class="form-label">Valve opening level:</label>
+                        <div class="progress" role="progressbar" aria-valuenow=<%= progress %>" aria-valuemin="0"
+                            aria-valuemax="100">
+                            <div class="progress-bar" style="width: <%= progress %>%" id="valve-bar"><%= progress %>%</div>
+                        </div>
+                        <input type="range" disabled="true" class="form-range" min="0" max="100" step="1" value="<%= range %>" id="valve-range"
+                            data-bs-toggle="tooltip" data-bs-placement="left"
+                            data-bs-title="Double click to insert a specific value" oninput="updateProgressBar(value)"
+                            ondblclick="toggleValveOpeningInput()">
+                        <div class="d-flex justify-content-end">
+                            <div class="form-check form-switch pt-3">
+                                <input class="form-check-input" type="checkbox" role="switch" id="manual-mode-switch"
+                                    onclick="toggleManualMode()">
+                                <label class="form-check-label" for="manual-mode-switch">Manual</label>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="valve-value-modal" tabindex="-1" aria-labelledby="valveValueModal" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h1 class="modal-title fs-5" id="valveValueModal">Set valve opening value</h1>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body input-group">
+                      <span class="input-group-text">%</span>
+                      <input id="valve-opening-input" type="number" class="form-control" aria-valuenow="0" min="0" max="100" required pattern="[0-9]+">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary" onclick="saveModalChanges(document.getElementById('valve-opening-input').value)">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="invalid-input-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="bi bi-exclamation-triangle-fill pe-2 text-warning"></i>
+                <strong class="me-auto text-warning">System</strong>
+                <small>just now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Please insert a valid number between 0 and 100.
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(_ => {
+            function update() {
+                $.ajax({
+                    url: '/update',
+                    type: 'GET',
+                    dataType: 'json'
+                })
+                .done(data => {
+                    $('#status-text').html(data.update.icon + data.update.name)
+                    $('#status-badge').removeClass('<%= status.style %>').addClass(data.update.style)
+                })
+            }
+            setInterval(update, 5000)
+        })
+    </script>
+</body>
+
+</html>
