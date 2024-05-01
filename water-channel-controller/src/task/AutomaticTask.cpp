@@ -21,10 +21,6 @@ AutomaticTask::AutomaticTask(LiquidCrystal_I2C* const monitor, Valve* const valv
 void AutomaticTask::start() {
     if (isAutomaticMode) {
         const String receivedState = Serial.readStringUntil('\n');
-        monitor->clear();
-        monitor->setCursor(2, 0);
-        monitor->print("Mode: AUTOMATIC");
-        monitor->setCursor(3, 2);
         if (receivedState.equals(ALARM_TOO_LOW)) {
             printAndSetValveLevel(LOW_OPENING_LEVEL);
         } else if (receivedState.equals(NORMAL)) {
@@ -39,7 +35,8 @@ void AutomaticTask::start() {
 
 void AutomaticTask::printAndSetValveLevel(const int level) {
     valve->setLevel(level);
-    monitor->print("Valve opening");
-    monitor->setCursor(5, 3);
-    monitor->print("level: " + String(level));
+    monitor->setCursor(12, 3);
+    monitor->print("   ");
+    monitor->setCursor(12, 3);
+    monitor->print(level);
 }

@@ -11,14 +11,11 @@ ManualTask::ManualTask(Valve* const valve,
 
 void ManualTask::start() {
     if (!isAutomaticMode) {
-        monitor->clear();
-        monitor->setCursor(2, 0);
-        monitor->print("Mode: MANUAL");
         const int valveLevel = knob->getValveOpeningLevel();
         valve->setLevel(valveLevel);
-        monitor->setCursor(3, 2);
-        monitor->print("Valve opening");
-        monitor->setCursor(5, 3);
-        monitor->print("level: " + String(valveLevel));
+        monitor->setCursor(12, 3);
+        monitor->print("   ");
+        monitor->setCursor(12, 3);
+        monitor->print(valveLevel);
     }
 }
