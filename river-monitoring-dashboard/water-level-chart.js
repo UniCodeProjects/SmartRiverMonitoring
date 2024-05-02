@@ -41,18 +41,19 @@ const chart = new Chart(document.getElementById('waterLevelChart'), {
   }
 });
 
-function addChartData(label, newData) {
-  chart.data.labels.push(label);
-  chart.data.datasets.forEach((dataset) => {
-    dataset.data.push(newData);
-  });
-  chart.update();
-}
+const maxChartWindowSize = 16;
+let currentXAxisMin = 1;
+let currentLabel = 0;
 
-function removeChartData() {
-  chart.data.labels.pop();
-  chart.data.datasets.forEach((dataset) => {
-    dataset.data.pop();
-  });
+function addChartData(newData) {
+  if (chart.data.labels.length >= maxChartWindowSize) {
+    chart.data.labels.shift();
+    chart.data.datasets[0].data.shift();
+    chart.options.scales.x.min = currentXAxisMin;
+    currentXAxisMin++;
+  }
+  chart.data.labels.push(currentLabel);
+  chart.data.datasets[0].data.push(newData)
   chart.update();
+  currentLabel++;
 }
