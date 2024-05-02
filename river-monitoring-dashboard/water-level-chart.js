@@ -16,6 +16,9 @@ const chart = new Chart(document.getElementById('waterLevelChart'), {
       x: {
         type: 'linear',
         min: 0,
+        ticks: {
+          stepSize: 1
+        },
         title: {
           display: true,
           text: 'Time (seconds)',
