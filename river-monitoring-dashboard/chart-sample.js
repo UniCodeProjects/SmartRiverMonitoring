@@ -1,13 +1,10 @@
-const ctx = document.getElementById('myChart');  
 const bootstrapStyle = getComputedStyle(document.body);
 
-new Chart(ctx, {
+const chart = new Chart(document.getElementById('waterLevelChart'), {
   type: 'line',
   data: {
-    labels: [0, 10, 20, 30, 40, 50, 60],
     datasets: [{
       label: 'Water level',
-      data: [50, 30, 60, 5, 70, 75, 80],
       borderWidth: 1,
       tension: 0.3,
       backgroundColor: bootstrapStyle.getPropertyValue('--bs-primary-emphasis'),
@@ -18,6 +15,7 @@ new Chart(ctx, {
     scales: {
       x: {
         type: 'linear',
+        min: 0,
         title: {
           display: true,
           text: 'Time (seconds)',
@@ -42,3 +40,19 @@ new Chart(ctx, {
     maintainAspectRatio: false
   }
 });
+
+function addChartData(label, newData) {
+  chart.data.labels.push(label);
+  chart.data.datasets.forEach((dataset) => {
+    dataset.data.push(newData);
+  });
+  chart.update();
+}
+
+function removeChartData() {
+  chart.data.labels.pop();
+  chart.data.datasets.forEach((dataset) => {
+    dataset.data.pop();
+  });
+  chart.update();
+}
