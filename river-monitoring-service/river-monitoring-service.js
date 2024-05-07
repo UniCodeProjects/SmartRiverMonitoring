@@ -9,6 +9,7 @@ const port = 3000;
 const client = mqtt.connect("mqtt://broker.mqtt-dashboard.com");
 const waterLevelTopic = "water-level";
 const samplePeriodTopic = "sample-period";
+let currentWaterLevel = NaN;
 let currentSystemState = null;
 
 // Server setup.
@@ -25,7 +26,7 @@ server.get('/', (req, res) => {
 })
 
 server.get('/update', (req, res) => {
-    res.json({ update: currentSystemState })
+    res.json({ badge: currentSystemState, waterLevel: currentWaterLevel })
 });
 
 // MQTT setup.
@@ -42,7 +43,7 @@ client.on("message", (topic, message) => {
     if (topic.toString() != waterLevelTopic) {
         throw new Error(`Unknown topic: ${topic.toString()}`);
     }
-    const currentWaterLevel = parseFloat(message.toString());
+    currentWaterLevel = parseFloat(message.toString());
     if (isNaN(currentWaterLevel)) {
         throw new Error(`Received water level was NaN: ${message.toString()}`);
     }

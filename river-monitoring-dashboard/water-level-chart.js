@@ -29,6 +29,8 @@ const chart = new Chart(document.getElementById('waterLevelChart'), {
                 }
             },
             y: {
+                max: 4,    // Cytlon Technologies HC-SR04 sonar max sampling distance.
+                min: 0,
                 title: {
                     display: true,
                     text: 'Water Level (meters)',

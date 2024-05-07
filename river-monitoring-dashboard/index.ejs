@@ -123,15 +123,15 @@
                     dataType: 'json'
                 })
                 .done(data => {
-                    $('#status-text').html(data.update.icon + data.update.name)
-                    $('#status-badge').attr('class', `badge border border-2 rounded-pill ${data.update.style}`)
+                    $('#status-text').html(data.badge.icon + data.badge.name)
+                    $('#status-badge').attr('class', `badge border border-2 rounded-pill ${data.badge.style}`)
+                    const waterLevel = data.waterLevel
+                    if (waterLevel != undefined || !isNaN(waterLevel)) {
+                        addChartData(waterLevel)
+                    }
                 })
             }
             setInterval(update, 1000)
-            // TODO: Chart demo code, to remove.
-            setInterval(_ => {
-                addChartData(Math.random() * 101)
-            }, 1000)
         })
     </script>
 </body>
