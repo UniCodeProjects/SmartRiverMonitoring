@@ -127,7 +127,7 @@
                     $('#status-badge').attr('class', `badge border border-2 rounded-pill ${data.badge.style}`)
                     const waterLevel = data.waterLevel
                     if (waterLevel != undefined || !isNaN(waterLevel)) {
-                        addChartData(waterLevel)
+                        addChartData(waterLevel, data.badge.styleHex)
                     }
                 })
             }

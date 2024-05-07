@@ -50,7 +50,7 @@ const maxChartWindowSize = 16;
 let currentXAxisMin = 1;
 let currentLabel = 0;
 
-function addChartData(newData) {
+function addChartData(newData, dataColour) {
     if (chart.data.labels.length >= maxChartWindowSize) {
         chart.data.labels.shift();
         chart.data.datasets[0].data.shift();
@@ -59,6 +59,8 @@ function addChartData(newData) {
     }
     chart.data.labels.push(currentLabel);
     chart.data.datasets[0].data.push(newData)
+    chart.data.datasets[0].backgroundColor = dataColour;
+    chart.data.datasets[0].borderColor = dataColour;
     chart.update();
     currentLabel++;
 }
