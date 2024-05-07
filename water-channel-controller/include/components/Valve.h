@@ -9,6 +9,10 @@ class Valve {
     /// If its value is less than 0, the valve opening level will be set at its minimum.
     /// Otherwise, if its value is more than `ValveKnob::VALVE_KNOB_LEVELS` the valve will be fully opened.
     virtual void setLevel(int level) = 0;
+
+    /// @brief Retrieves the current valve opening level.
+    /// @return The current valve opening level.
+    virtual int getLevel() = 0;
 };
 
 #endif
