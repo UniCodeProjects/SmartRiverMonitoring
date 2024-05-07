@@ -13,8 +13,11 @@ class ValveImpl : public Valve {
 
     void setLevel(int level);
 
+    int getLevel();
+
    private:
     ServoMotor* servoMotor;
+    int level;
 };
 
 #endif
