@@ -132,7 +132,17 @@
                 })
             }
             setInterval(update, 1000)
+            $("#manual-mode-switch").click(function() {
+                var isManual = $(this).is(":checked");
+                $.ajax({
+                    url: "/manual-mode-switch",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ isManual: isManual })
+                });
+            });
         })
+
     </script>
 </body>
 
