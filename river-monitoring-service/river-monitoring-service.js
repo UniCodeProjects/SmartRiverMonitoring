@@ -5,6 +5,7 @@ const WaterLevel = require("./water-level");
 const SystemState = require("./system-state");
 const Serial = require("./serial");
 const { SerialPort } = require("serialport");
+const bodyParser = require("body-parser");
 
 const server = express();
 const serverPort = 3000;
@@ -18,6 +19,7 @@ let currentSystemState = null;
 server.set('view engine', 'ejs');
 server.set('views', path.resolve("../river-monitoring-dashboard"))    // ejs file location.
 server.use(express.static(path.resolve("../river-monitoring-dashboard")))
+server.use(bodyParser.json());
 
 server.listen(serverPort, _ => {
     console.log(`Server listening on port ${serverPort}`);
@@ -29,6 +31,12 @@ server.get('/', (req, res) => {
 
 server.get('/update', (req, res) => {
     res.json({ badge: currentSystemState, waterLevel: currentWaterLevel })
+});
+
+server.post('/manual-mode-switch', (req, res) => {
+    const isManual = req.body.isManual;
+    console.log("Remote control: " + (isManual ? "ON" : "OFF"));
+    res.sendStatus(200);
 });
 
 // MQTT setup.
