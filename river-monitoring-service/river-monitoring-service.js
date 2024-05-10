@@ -39,6 +39,12 @@ server.post('/manual-mode-switch', (req, res) => {
     res.sendStatus(200);
 });
 
+server.post('/valve', (req, res) => {
+    const rangeValue = req.body.valveRangeValue;
+    console.log("Valve range value: " + rangeValue);
+    res.sendStatus(200);
+})
+
 // MQTT setup.
 client.on("connect", () => {
     client.subscribe(waterLevelTopic, err => {
