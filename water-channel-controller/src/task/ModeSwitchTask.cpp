@@ -30,10 +30,13 @@ void ModeSwitchTask::start() {
             fromDashboard = false;
             hasModeChanged = true;
         } else if (remoteControlState != "") { // this last branch is needed in order not to waste the string read, if it has a meaning for the other tasks
+            /*
+             * If the remote control is enabled, if the string read is not "ON" or "OFF",
+             * then it must be the valve opening level read from the dashboard.
+             */
             if (fromDashboard) {
-                // TODO: remove startsWith() control, the server should not send the system state in the remote control mode
-                levelFromDashboard = remoteControlState == "0\n" ? 0 : (remoteControlState.startsWith("ALARM") ? levelFromDashboard : remoteControlState.toInt());
-            } else {
+                levelFromDashboard = remoteControlState == "0\n" ? 0 : remoteControlState.toInt();
+            } else { // If the remote control is not enabled and the string read is neither "ON" nor "OFF", then it is the current system state
                 receivedState = remoteControlState;
             }
         }
