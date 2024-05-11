@@ -8,6 +8,8 @@
 #include "TaskImpl.h"
 
 extern bool isAutomaticMode;
+extern bool fromDashboard;
+extern int levelFromDashboard;
 
 class ManualTask : public TaskImpl {
    public:

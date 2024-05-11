@@ -6,6 +6,7 @@ bool isAutomaticMode = true;
 bool fromDashboard = false;
 static bool hasModeChanged = false;
 String receivedState;
+int levelFromDashboard = 0;
 
 ModeSwitchTask::ModeSwitchTask(Button* const button, LiquidCrystal_I2C* const monitor, const int period) : TaskImpl(period) {
     this->button = button;
@@ -28,8 +29,13 @@ void ModeSwitchTask::start() {
             isAutomaticMode = true;
             fromDashboard = false;
             hasModeChanged = true;
-        } else if (remoteControlState != "") {
-            receivedState = remoteControlState;
+        } else if (remoteControlState != "") { // this last branch is needed in order not to waste the string read, if it has a meaning for the other tasks
+            if (fromDashboard) {
+                // TODO: remove startsWith() control, the server should not send the system state in the remote control mode
+                levelFromDashboard = remoteControlState == "0\n" ? 0 : (remoteControlState.startsWith("ALARM") ? levelFromDashboard : remoteControlState.toInt());
+            } else {
+                receivedState = remoteControlState;
+            }
         }
         printModeOnLCD();
     }

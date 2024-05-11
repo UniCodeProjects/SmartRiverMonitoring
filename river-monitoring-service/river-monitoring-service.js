@@ -14,6 +14,7 @@ const waterLevelTopic = "water-level";
 const samplePeriodTopic = "sample-period";
 let currentWaterLevel = NaN;
 let currentSystemState = null;
+let isRemoteControl = false;
 
 // Server setup.
 server.set('view engine', 'ejs');
@@ -34,15 +35,15 @@ server.get('/update', (req, res) => {
 });
 
 server.post('/manual-mode-switch', (req, res) => {
-    const isManual = req.body.isManual;
-    Serial.serialWrite(serialPort, isManual ? "ON" : "OFF");
+    isRemoteControl = req.body.isManual;
+    Serial.serialWrite(serialPort, isRemoteControl ? "ON" : "OFF");
     res.sendStatus(200);
 });
 
 server.post('/valve', (req, res) => {
     const rangeValue = req.body.valveRangeValue;
     console.log("Valve range value: " + rangeValue);
-    // Serial.serialWrite(serialPort, rangeValue); // TODO: uncomment when the remote control is implemented in Arduino
+    Serial.serialWrite(serialPort, rangeValue);
     res.sendStatus(200);
 })
 
