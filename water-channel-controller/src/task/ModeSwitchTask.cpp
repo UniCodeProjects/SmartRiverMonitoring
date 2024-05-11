@@ -14,7 +14,7 @@ ModeSwitchTask::ModeSwitchTask(Button* const button, LiquidCrystal_I2C* const mo
 }
 
 void ModeSwitchTask::start() {
-    if (button->isPressed()) {
+    if (!fromDashboard && button->isPressed()) {
         isAutomaticMode = !isAutomaticMode;
         hasModeChanged = true;
         printModeOnLCD();
