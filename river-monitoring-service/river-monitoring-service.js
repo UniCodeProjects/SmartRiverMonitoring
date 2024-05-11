@@ -35,13 +35,14 @@ server.get('/update', (req, res) => {
 
 server.post('/manual-mode-switch', (req, res) => {
     const isManual = req.body.isManual;
-    console.log("Remote control: " + (isManual ? "ON" : "OFF"));
+    Serial.serialWrite(serialPort, isManual ? "ON" : "OFF");
     res.sendStatus(200);
 });
 
 server.post('/valve', (req, res) => {
     const rangeValue = req.body.valveRangeValue;
     console.log("Valve range value: " + rangeValue);
+    // Serial.serialWrite(serialPort, rangeValue); // TODO: uncomment when the remote control is implemented in Arduino
     res.sendStatus(200);
 })
 

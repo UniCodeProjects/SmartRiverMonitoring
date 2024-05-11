@@ -8,6 +8,7 @@
 #include "TaskImpl.h"
 
 extern bool isAutomaticMode;
+extern String receivedState;
 
 class AutomaticTask : public TaskImpl {
    public:
