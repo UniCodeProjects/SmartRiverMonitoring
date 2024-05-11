@@ -74,11 +74,15 @@ client.on("message", (topic, message) => {
     if (currentWaterLevel >= WaterLevel.WL1 && currentWaterLevel <= WaterLevel.WL2) {
         client.publish(samplePeriodTopic, `${SystemState.Normal.samplePeriod}\n`);
         currentSystemState = SystemState.Normal.Badge;
-        Serial.serialWrite(serialPort, SystemState.Normal.name);
+        if (!isRemoteControl) {
+            Serial.serialWrite(serialPort, SystemState.Normal.name);
+        }
     } else if (currentWaterLevel < WaterLevel.WL1) {
         client.publish(samplePeriodTopic, `${SystemState.AlarmTooLow.samplePeriod}\n`);
         currentSystemState = SystemState.AlarmTooLow.Badge;
-        Serial.serialWrite(serialPort, SystemState.AlarmTooLow.name);
+        if (!isRemoteControl) {
+            Serial.serialWrite(serialPort, SystemState.AlarmTooLow.name);
+        }
     } else if (currentWaterLevel > WaterLevel.WL2) {
         if (currentWaterLevel <= WaterLevel.WL3) {
             client.publish(samplePeriodTopic, `${SystemState.PreAlarmTooHigh.samplePeriod}\n`);
@@ -86,11 +90,15 @@ client.on("message", (topic, message) => {
         } else if (currentWaterLevel > WaterLevel.WL3 && currentWaterLevel <= WaterLevel.WL4) {
             client.publish(samplePeriodTopic, `${SystemState.AlarmTooHigh.samplePeriod}\n`);
             currentSystemState = SystemState.AlarmTooHigh.Badge;
-            Serial.serialWrite(serialPort, SystemState.AlarmTooHigh.name);
+            if (!isRemoteControl) {
+                Serial.serialWrite(serialPort, SystemState.AlarmTooHigh.name);
+            }
         } else if (currentWaterLevel > WaterLevel.WL4) {
             client.publish(samplePeriodTopic, `${SystemState.AlarmTooHighCritic.samplePeriod}\n`);
             currentSystemState = SystemState.AlarmTooHighCritic.Badge;
-            Serial.serialWrite(serialPort, SystemState.AlarmTooHighCritic.name);
+            if (!isRemoteControl) {
+                Serial.serialWrite(serialPort, SystemState.AlarmTooHighCritic.name);
+            }
         }
     }
 });
