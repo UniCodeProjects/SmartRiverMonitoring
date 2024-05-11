@@ -14,6 +14,8 @@ class ModeSwitchTask : public TaskImpl {
    private:
     Button* button;
     LiquidCrystal_I2C* monitor;
+
+    void printModeOnLCD();
 };
 
 #endif
