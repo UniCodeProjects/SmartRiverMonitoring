@@ -33,7 +33,7 @@ void setup() {
   Serial.println("ARDUINO_READY");
   monitor->init();
   monitor->backlight();
-  monitor->setCursor(2, 0);
+  monitor->setCursor(0, 0);
   monitor->print("Mode: AUTOMATIC");
   monitor->setCursor(3, 2);
   monitor->print("Valve opening");
