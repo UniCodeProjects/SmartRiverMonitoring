@@ -44,7 +44,6 @@ server.post('/remote-control', (req, res) => {
 
 server.post('/valve', (req, res) => {
     const rangeValue = req.body.valveRangeValue;
-    console.log("Valve range value: " + rangeValue);
     Serial.serialWrite(serialPort, rangeValue);
     res.sendStatus(200);
 })
