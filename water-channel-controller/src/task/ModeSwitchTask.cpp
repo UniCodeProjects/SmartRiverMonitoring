@@ -47,10 +47,10 @@ void ModeSwitchTask::start() {
 
 void ModeSwitchTask::printModeOnLCD() {
     if (hasModeChanged) {
-        monitor->setCursor(8, 0);
-        monitor->print("         ");
-        monitor->setCursor(8, 0);
-        monitor->print(isAutomaticMode ? "AUTOMATIC" : "MANUAL");
+        monitor->setCursor(6, 0);
+        monitor->print("              ");
+        monitor->setCursor(6, 0);
+        monitor->print(isAutomaticMode ? "AUTOMATIC" : (fromDashboard ? "REMOTE CONTROL" : "LOCAL MANUAL"));
         hasModeChanged = false;
     }
 }
