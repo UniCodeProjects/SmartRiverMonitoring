@@ -16,6 +16,7 @@ ModeSwitchTask::ModeSwitchTask(Button* const button, LiquidCrystal_I2C* const mo
 void ModeSwitchTask::start() {
     if (!fromDashboard && button->isPressed()) {
         isAutomaticMode = !isAutomaticMode;
+        Serial.println("Local manual mode: " + String(isAutomaticMode ? "OFF" : "ON"));
         hasModeChanged = true;
         printModeOnLCD();
     }

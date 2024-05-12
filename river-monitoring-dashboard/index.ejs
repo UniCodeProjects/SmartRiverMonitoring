@@ -135,12 +135,24 @@
             $("#manual-mode-switch").click(function() {
                 var isManual = $(this).is(":checked");
                 $.ajax({
-                    url: "/manual-mode-switch",
+                    url: "/remote-control",
                     type: "POST",
                     contentType: "application/json",
                     data: JSON.stringify({ isManual: isManual })
                 });
             });
+
+            function setManualModeSwitchDisabled() {
+                $.ajax({
+                    url: "/manual-mode-switch",
+                    type: "POST",
+                    dataType: "json"
+                })
+                .done(data => {
+                    $('#manual-mode-switch').attr('disabled', data.isDisabled);
+                })
+            }
+            setInterval(setManualModeSwitchDisabled, 500);
         })
 
     </script>
