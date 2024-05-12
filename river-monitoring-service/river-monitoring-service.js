@@ -15,6 +15,8 @@ const samplePeriodTopic = "sample-period";
 let currentWaterLevel = NaN;
 let currentSystemState = null;
 let isRemoteControl = false;
+let isManualModeSwitchDisabled = false;
+let existsLocalManualModeListener = false;
 
 // Server setup.
 server.set('view engine', 'ejs');
@@ -34,7 +36,7 @@ server.get('/update', (req, res) => {
     res.json({ badge: currentSystemState, waterLevel: currentWaterLevel })
 });
 
-server.post('/manual-mode-switch', (req, res) => {
+server.post('/remote-control', (req, res) => {
     isRemoteControl = req.body.isManual;
     Serial.serialWrite(serialPort, isRemoteControl ? "ON" : "OFF");
     res.sendStatus(200);
@@ -46,6 +48,10 @@ server.post('/valve', (req, res) => {
     Serial.serialWrite(serialPort, rangeValue);
     res.sendStatus(200);
 })
+
+server.post('/manual-mode-switch', (req, res) => {
+    res.json({ isDisabled: isManualModeSwitchDisabled });
+});
 
 // MQTT setup.
 client.on("connect", () => {
@@ -61,6 +67,28 @@ client.on("connect", () => {
 const serialPort = Serial.getArduinoPort().then(portPath => {
     return new SerialPort({ path: portPath, baudRate: 9600 });
 });
+
+function checkForLocalManualMode() {
+    /*
+     * This check assures that only one listener on the serial is created, avoiding memory leaks.
+     * When a listener is destroyed, the variable "existsLocalManualModeListener" is set to false: in this
+     * way, a new listener will be created at the next execution of this function.
+     */
+    if (!existsLocalManualModeListener) {
+        Serial.serialRead(serialPort).then(data => {
+            data = data.trim();
+            if (data === "Local manual mode: ON") {
+                isManualModeSwitchDisabled = true;
+            } else if (data === "Local manual mode: OFF") {
+                isManualModeSwitchDisabled = false;
+            }
+            existsLocalManualModeListener = false;
+        });
+        existsLocalManualModeListener = true;
+    }
+}
+
+setInterval(checkForLocalManualMode, 500);
 
 // Server logic.
 client.on("message", (topic, message) => {
