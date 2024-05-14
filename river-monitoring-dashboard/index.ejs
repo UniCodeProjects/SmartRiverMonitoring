@@ -129,6 +129,11 @@
                     if (waterLevel != undefined || !isNaN(waterLevel)) {
                         addChartData(waterLevel, data.badge.styleHex)
                     }
+                    const valveLevel = data.valveLevel
+                    if (valveLevel != null) {
+                        updateProgressBar(valveLevel.toString())
+                        $('#valve-range').val(valveLevel)
+                    }
                 })
             }
             setInterval(update, 1000)
@@ -140,10 +145,6 @@
                     contentType: "application/json",
                     data: JSON.stringify({ isManual: isManual })
                 });
-                if (!isManual) {
-                    updateProgressBar("0");
-                    document.getElementById('valve-range').value = "0";
-                }
             });
 
             function setManualModeSwitchDisabled() {

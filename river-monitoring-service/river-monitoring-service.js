@@ -14,6 +14,7 @@ const waterLevelTopic = "water-level";
 const samplePeriodTopic = "sample-period";
 let currentWaterLevel = NaN;
 let currentSystemState = null;
+let currentValveLevel = NaN;
 let isRemoteControl = false;
 let isManualModeSwitchDisabled = false;
 let existsLocalManualModeListener = false;
@@ -33,11 +34,12 @@ server.get('/', (req, res) => {
 })
 
 server.get('/update', (req, res) => {
-    res.json({ badge: currentSystemState, waterLevel: currentWaterLevel })
+    res.json({ badge: currentSystemState, waterLevel: currentWaterLevel, valveLevel: currentValveLevel })
 });
 
 server.post('/remote-control', (req, res) => {
     isRemoteControl = req.body.isManual;
+    currentValveLevel = isRemoteControl ? null : currentValveLevel;
     Serial.serialWrite(serialPort, "Remote control: " + (isRemoteControl ? "ON" : "OFF"));
     res.sendStatus(200);
 });
@@ -80,6 +82,8 @@ function checkForLocalManualMode() {
                 isManualModeSwitchDisabled = true;
             } else if (data === "Local manual mode: OFF") {
                 isManualModeSwitchDisabled = false;
+            } else if (data.includes("VALVE_LVL=")) {
+                currentValveLevel = parseInt(data.replace("VALVE_LVL=", ""));
             }
             existsLocalManualModeListener = false;
         });

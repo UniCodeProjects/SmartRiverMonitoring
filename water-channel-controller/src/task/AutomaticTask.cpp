@@ -35,6 +35,7 @@ void AutomaticTask::start() {
 
 void AutomaticTask::printAndSetValveLevel(const int level) {
     valve->setLevel(level);
+    Serial.println("VALVE_LVL=" + String(level));
     monitor->setCursor(12, 3);
     monitor->print("   ");
     monitor->setCursor(12, 3);
