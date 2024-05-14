@@ -29,7 +29,6 @@ void ModeSwitchTask::start() {
         } else if (remoteControlState.equals("Remote control: OFF")) {
             isAutomaticMode = true;
             fromDashboard = false;
-            levelFromDashboard = 0;
             hasModeChanged = true;
         } else if (remoteControlState != "") { // this last branch is needed in order not to waste the string read, if it has a meaning for the other tasks
             /*
