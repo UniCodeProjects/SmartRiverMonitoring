@@ -33,9 +33,13 @@ server.get('/', (req, res) => {
     res.render('index', { status: SystemState.Normal.Badge, progress: 0, range: 0 })
 })
 
-server.get('/update', (req, res) => {
-    res.json({ badge: currentSystemState, waterLevel: currentWaterLevel, valveLevel: currentValveLevel })
+server.get('/update/chart', (req, res) => {
+    res.json({ badge: currentSystemState, waterLevel: currentWaterLevel })
 });
+
+server.get('/update/valve', (req, res) => {
+    res.json({ valveLevel: currentValveLevel });
+})
 
 server.post('/remote-control', (req, res) => {
     isRemoteControl = req.body.isManual;
@@ -45,8 +49,10 @@ server.post('/remote-control', (req, res) => {
 });
 
 server.post('/valve', (req, res) => {
-    const rangeValue = req.body.valveRangeValue;
-    Serial.serialWrite(serialPort, rangeValue);
+    if (isRemoteControl) {
+        const rangeValue = req.body.valveRangeValue;
+        Serial.serialWrite(serialPort, rangeValue);
+    }
     res.sendStatus(200);
 })
 
