@@ -38,7 +38,7 @@ server.get('/update', (req, res) => {
 
 server.post('/remote-control', (req, res) => {
     isRemoteControl = req.body.isManual;
-    Serial.serialWrite(serialPort, isRemoteControl ? "ON" : "OFF");
+    Serial.serialWrite(serialPort, "Remote control: " + (isRemoteControl ? "ON" : "OFF"));
     res.sendStatus(200);
 });
 

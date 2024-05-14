@@ -22,18 +22,18 @@ void ModeSwitchTask::start() {
     }
     if (isAutomaticMode || fromDashboard) {
         const String remoteControlState = Serial.readStringUntil('\n');
-        if (remoteControlState.equals("ON")) {
+        if (remoteControlState.equals("Remote control: ON")) {
             isAutomaticMode = false;
             fromDashboard = true;
             hasModeChanged = true;
-        } else if (remoteControlState.equals("OFF")) {
+        } else if (remoteControlState.equals("Remote control: OFF")) {
             isAutomaticMode = true;
             fromDashboard = false;
             levelFromDashboard = 0;
             hasModeChanged = true;
         } else if (remoteControlState != "") { // this last branch is needed in order not to waste the string read, if it has a meaning for the other tasks
             /*
-             * If the remote control is enabled, if the string read is not "ON" or "OFF",
+             * If the remote control is enabled, if the string read is neither "Remote control: ON" nor "Remote control: OFF",
              * then it must be the valve opening level read from the dashboard.
              */
             if (fromDashboard) {
