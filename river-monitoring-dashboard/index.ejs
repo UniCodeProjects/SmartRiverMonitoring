@@ -140,6 +140,10 @@
                     contentType: "application/json",
                     data: JSON.stringify({ isManual: isManual })
                 });
+                if (!isManual) {
+                    updateProgressBar("0");
+                    document.getElementById('valve-range').value = "0";
+                }
             });
 
             function setManualModeSwitchDisabled() {
