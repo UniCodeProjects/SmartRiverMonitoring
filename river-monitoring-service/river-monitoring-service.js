@@ -89,6 +89,12 @@ function checkForLocalManualMode() {
 
 setInterval(checkForLocalManualMode, 500);
 
+function writeActualStateOnSerial(port, state) {
+    if (!isRemoteControl) {
+        Serial.serialWrite(port, state);
+    }
+}
+
 // Server logic.
 client.on("message", (topic, message) => {
     if (topic.toString() != waterLevelTopic) {
@@ -101,15 +107,11 @@ client.on("message", (topic, message) => {
     if (currentWaterLevel >= WaterLevel.WL1 && currentWaterLevel <= WaterLevel.WL2) {
         client.publish(samplePeriodTopic, `${SystemState.Normal.samplePeriod}\n`);
         currentSystemState = SystemState.Normal.Badge;
-        if (!isRemoteControl) {
-            Serial.serialWrite(serialPort, SystemState.Normal.name);
-        }
+        writeActualStateOnSerial(serialPort, SystemState.Normal.name);
     } else if (currentWaterLevel < WaterLevel.WL1) {
         client.publish(samplePeriodTopic, `${SystemState.AlarmTooLow.samplePeriod}\n`);
         currentSystemState = SystemState.AlarmTooLow.Badge;
-        if (!isRemoteControl) {
-            Serial.serialWrite(serialPort, SystemState.AlarmTooLow.name);
-        }
+        writeActualStateOnSerial(serialPort, SystemState.AlarmTooLow.name);
     } else if (currentWaterLevel > WaterLevel.WL2) {
         if (currentWaterLevel <= WaterLevel.WL3) {
             client.publish(samplePeriodTopic, `${SystemState.PreAlarmTooHigh.samplePeriod}\n`);
@@ -117,15 +119,11 @@ client.on("message", (topic, message) => {
         } else if (currentWaterLevel > WaterLevel.WL3 && currentWaterLevel <= WaterLevel.WL4) {
             client.publish(samplePeriodTopic, `${SystemState.AlarmTooHigh.samplePeriod}\n`);
             currentSystemState = SystemState.AlarmTooHigh.Badge;
-            if (!isRemoteControl) {
-                Serial.serialWrite(serialPort, SystemState.AlarmTooHigh.name);
-            }
+            writeActualStateOnSerial(serialPort, SystemState.AlarmTooHigh.name);
         } else if (currentWaterLevel > WaterLevel.WL4) {
             client.publish(samplePeriodTopic, `${SystemState.AlarmTooHighCritic.samplePeriod}\n`);
             currentSystemState = SystemState.AlarmTooHighCritic.Badge;
-            if (!isRemoteControl) {
-                Serial.serialWrite(serialPort, SystemState.AlarmTooHighCritic.name);
-            }
+            writeActualStateOnSerial(serialPort, SystemState.AlarmTooHighCritic.name);
         }
     }
 });
