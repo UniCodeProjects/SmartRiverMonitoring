@@ -116,6 +116,7 @@ client.on("message", (topic, message) => {
         if (currentWaterLevel <= WaterLevel.WL3) {
             client.publish(samplePeriodTopic, `${SystemState.PreAlarmTooHigh.samplePeriod}\n`);
             currentSystemState = SystemState.PreAlarmTooHigh.Badge;
+            writeActualStateOnSerial(serialPort, SystemState.PreAlarmTooHigh.name);
         } else if (currentWaterLevel > WaterLevel.WL3 && currentWaterLevel <= WaterLevel.WL4) {
             client.publish(samplePeriodTopic, `${SystemState.AlarmTooHigh.samplePeriod}\n`);
             currentSystemState = SystemState.AlarmTooHigh.Badge;

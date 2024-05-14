@@ -6,6 +6,7 @@
 
 #define ALARM_TOO_LOW "ALARM-TOO-LOW"
 #define NORMAL "NORMAL"
+#define PRE_ALARM_TOO_HIGH "PRE-ALARM-TOO-HIGH"
 #define ALARM_TOO_HIGH "ALARM-TOO-HIGH"
 #define ALARM_TOO_HIGH_CRITIC "ALARM-TOO-HIGH-CRITIC"
 #define LOW_OPENING_LEVEL 0
@@ -24,7 +25,7 @@ void AutomaticTask::start() {
             printAndSetValveLevel(LOW_OPENING_LEVEL);
         } else if (receivedState.equals(NORMAL)) {
             printAndSetValveLevel(NORMAL_OPENING_LEVEL);
-        } else if (receivedState.equals(ALARM_TOO_HIGH)) {
+        } else if (receivedState.equals(ALARM_TOO_HIGH) || receivedState.equals(PRE_ALARM_TOO_HIGH)) {
             printAndSetValveLevel(HIGH_OPENING_LEVEL);
         } else if (receivedState.equals(ALARM_TOO_HIGH_CRITIC)) {
             printAndSetValveLevel(CRITIC_OPENING_LEVEL);
