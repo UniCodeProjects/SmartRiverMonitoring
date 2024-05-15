@@ -16,7 +16,7 @@ void MessageReceiverTask::start() {
             remoteControlState = messageReceived;
         } else if (messageReceived != "") {
             if (fromDashboard) {
-                levelFromDashboard = messageReceived == "0\n" ? 0 : messageReceived.toInt();
+                levelFromDashboard = messageReceived.toInt();
             } else {
                 receivedState = messageReceived;
             }
