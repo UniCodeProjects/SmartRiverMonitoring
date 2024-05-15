@@ -10,6 +10,7 @@
 #include "../include/task/AutomaticTask.h"
 #include "../include/task/ModeSwitchTask.h"
 #include "../include/task/ManualTask.h"
+#include "../include/task/MessageReceiverTask.h"
 
 #define SERIAL_BAUD_RATE 9600
 #define SERIAL_TIMEOUT_MILLIS 50
@@ -43,6 +44,7 @@ void setup() {
   scheduler.initialize(100);
   scheduler.addTask(new AutomaticTask(monitor, valve, 500));
   scheduler.addTask(new ModeSwitchTask(button, monitor, 100));
+  scheduler.addTask(new MessageReceiverTask(100));
   scheduler.addTask(new ManualTask(valve, valveKnob, monitor, 500));
 }
 

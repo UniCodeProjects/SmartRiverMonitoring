@@ -6,6 +6,8 @@
 #include "../components/Button.h"
 #include "TaskImpl.h"
 
+extern String remoteControlState;
+
 class ModeSwitchTask : public TaskImpl {
    public:
     ModeSwitchTask(Button* const button, LiquidCrystal_I2C* const monitor, const int period);
