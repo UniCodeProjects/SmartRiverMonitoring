@@ -5,8 +5,6 @@
 bool isAutomaticMode = true;
 bool fromDashboard = false;
 static bool hasModeChanged = false;
-String receivedState;
-int levelFromDashboard = 0;
 
 ModeSwitchTask::ModeSwitchTask(Button* const button, LiquidCrystal_I2C* const monitor, const int period) : TaskImpl(period) {
     this->button = button;
@@ -18,31 +16,20 @@ void ModeSwitchTask::start() {
         isAutomaticMode = !isAutomaticMode;
         Serial.println("Local manual mode: " + String(isAutomaticMode ? "OFF" : "ON"));
         hasModeChanged = true;
-        printModeOnLCD();
-    }
-    if (isAutomaticMode || fromDashboard) {
-        const String remoteControlState = Serial.readStringUntil('\n');
+    } else {
         if (remoteControlState.equals("Remote control: ON")) {
             isAutomaticMode = false;
             fromDashboard = true;
             hasModeChanged = true;
+            remoteControlState = "";
         } else if (remoteControlState.equals("Remote control: OFF")) {
             isAutomaticMode = true;
             fromDashboard = false;
             hasModeChanged = true;
-        } else if (remoteControlState != "") { // this last branch is needed in order not to waste the string read, if it has a meaning for the other tasks
-            /*
-             * If the remote control is enabled, if the string read is neither "Remote control: ON" nor "Remote control: OFF",
-             * then it must be the valve opening level read from the dashboard.
-             */
-            if (fromDashboard) {
-                levelFromDashboard = remoteControlState == "0\n" ? 0 : remoteControlState.toInt();
-            } else { // If the remote control is not enabled and the string read is neither "ON" nor "OFF", then it is the current system state
-                receivedState = remoteControlState;
-            }
+            remoteControlState = "";
         }
-        printModeOnLCD();
     }
+    printModeOnLCD();
 }
 
 void ModeSwitchTask::printModeOnLCD() {

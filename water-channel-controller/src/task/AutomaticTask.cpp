@@ -14,6 +14,8 @@
 #define HIGH_OPENING_LEVEL 50
 #define CRITIC_OPENING_LEVEL 100
 
+static int lastValveLevel;
+
 AutomaticTask::AutomaticTask(LiquidCrystal_I2C* const monitor, Valve* const valve, const int period) : TaskImpl(period) {
     this->monitor = monitor;
     this->valve = valve;
@@ -35,7 +37,10 @@ void AutomaticTask::start() {
 
 void AutomaticTask::printAndSetValveLevel(const int level) {
     valve->setLevel(level);
-    Serial.println("VALVE_LVL=" + String(level));
+    if (lastValveLevel != level) {
+        Serial.println("VALVE_LVL=" + String(level));
+        lastValveLevel = level;
+    }
     monitor->setCursor(12, 3);
     monitor->print("   ");
     monitor->setCursor(12, 3);
