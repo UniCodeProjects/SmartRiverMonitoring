@@ -7,9 +7,8 @@
 #include "../include/components/PotentiometerImpl.h"
 #include "../include/components/ServoMotorImpl.h"
 #include "../include/scheduler/Scheduler.h"
-#include "../include/task/AutomaticTask.h"
+#include "../include/task/SystemModeTask.h"
 #include "../include/task/ModeSwitchTask.h"
-#include "../include/task/ManualTask.h"
 #include "../include/task/MessageReceiverTask.h"
 
 #define SERIAL_BAUD_RATE 9600
@@ -42,10 +41,9 @@ void setup() {
   monitor->print("level: ");
   motor->on();
   scheduler.initialize(100);
-  scheduler.addTask(new AutomaticTask(monitor, valve, 500));
+  scheduler.addTask(new SystemModeTask(monitor, valveKnob, valve, 500));
   scheduler.addTask(new ModeSwitchTask(button, monitor, 100));
   scheduler.addTask(new MessageReceiverTask(100));
-  scheduler.addTask(new ManualTask(valve, valveKnob, monitor, 500));
 }
 
 void loop() {
