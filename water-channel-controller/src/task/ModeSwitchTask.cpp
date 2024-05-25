@@ -16,7 +16,7 @@ void ModeSwitchTask::start() {
         isAutomaticMode = !isAutomaticMode;
         Serial.println("Local manual mode: " + String(isAutomaticMode ? "OFF" : "ON"));
         hasModeChanged = true;
-    } else {
+    } else if (isAutomaticMode || fromDashboard) {
         if (remoteControlState.equals("Remote control: ON")) {
             isAutomaticMode = false;
             fromDashboard = true;
