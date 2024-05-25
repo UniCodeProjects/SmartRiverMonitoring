@@ -116,9 +116,9 @@
     </div>
     <script>
         $(document).ready(_ => {
-            function update() {
+            setInterval(_ => {
                 $.ajax({
-                    url: '/update',
+                    url: '/update/chart',
                     type: 'GET',
                     dataType: 'json'
                 })
@@ -130,9 +130,44 @@
                         addChartData(waterLevel, data.badge.styleHex)
                     }
                 })
+            }, 1000)
+            setInterval(_ => {
+                $.ajax({
+                    url: '/update/valve',
+                    type: 'GET',
+                    dataType: 'json'
+                })
+                .done(data => {
+                    const valveLevel = data.valveLevel
+                    if (valveLevel != null) {
+                        updateProgressBar(valveLevel.toString())
+                        $('#valve-range').val(valveLevel)
+                    }
+                })
+            }, 500)
+            $("#manual-mode-switch").click(function() {
+                var isManual = $(this).is(":checked");
+                $.ajax({
+                    url: "/remote-control",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ isManual: isManual })
+                });
+            });
+
+            function setManualModeSwitchDisabled() {
+                $.ajax({
+                    url: "/manual-mode-switch",
+                    type: "POST",
+                    dataType: "json"
+                })
+                .done(data => {
+                    $('#manual-mode-switch').attr('disabled', data.isDisabled);
+                })
             }
-            setInterval(update, 1000)
+            setInterval(setManualModeSwitchDisabled, 500);
         })
+
     </script>
 </body>
 

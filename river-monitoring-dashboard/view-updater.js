@@ -38,6 +38,12 @@ function updateProgressBar(value) {
     progressBar.style.width = valuePercentage;
     progressBar.innerHTML = valuePercentage;
     progressBar.setAttribute('aria-valuenow', value);
+    $.ajax({
+        url: '/valve',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ valveRangeValue: value })
+    });
 }
 
 function toggleValveOpeningInput(show = true) {

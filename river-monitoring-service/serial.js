@@ -1,6 +1,8 @@
 const { autoDetect } = require('@serialport/bindings-cpp');
 const { SerialPort, ReadyParser } = require('serialport');
 
+isFirstTime = true;
+
 /**
  * Detects the serial port where Arduino is plugged in.
  * This function only handles one Arduino. Multiple Arduinos will be ignored, and
@@ -35,8 +37,13 @@ function serialWrite(port, content) {
         if (!content.endsWith('\n')) {
             content += '\n';
         }
-        const parser = actualPort.pipe(new ReadyParser({ delimiter: "ARDUINO_READY" }));
-        parser.on('ready', _ => actualPort.write(content, 'ascii'));
+        if (isFirstTime) {
+            parser = actualPort.pipe(new ReadyParser({ delimiter: "ARDUINO_READY" }));
+            parser.on('ready', _ => actualPort.write(content, 'ascii'));
+            isFirstTime = false;
+        } else {
+            actualPort.write(content, 'ascii');
+        }
     });
 }
 
