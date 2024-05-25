@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include "../../include/components/SonarImpl.h"
 
-#define ZERO_CELSIUS_IN_KELVIN 273.15
 #define AIR_ADIABATIC_INDEX 1.4
 #define AIR_MOLAR_CONSTANT 287.057
 #define ONE_SECOND_IN_MICROSECONDS 1000000.0
