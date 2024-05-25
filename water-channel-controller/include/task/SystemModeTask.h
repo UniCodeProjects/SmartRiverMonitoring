@@ -12,9 +12,16 @@ extern String receivedState;
 extern bool fromDashboard;
 extern int levelFromDashboard;
 
+/// @brief The main task of the system. Manages the valve and its opening level.
 class SystemModeTask : public TaskImpl {
    public:
+    /// @brief Default constructor.
+    /// @param monitor The user display.
+    /// @param knob The knob that manages the valve opening level in the LOCAL_MANUAL mode.
+    /// @param valve The valve.
+    /// @param period The task period.
     SystemModeTask(LiquidCrystal_I2C* const monitor, ValveKnob* const knob, Valve* const valve, const int period);
+
     void start();
 
    private:
