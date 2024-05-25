@@ -36,6 +36,15 @@ void SystemModeTask::start() {
             }
             if (!isAutomaticMode) {
                 state = fromDashboard ? REMOTE_CONTROL : LOCAL_MANUAL;
+                if (state == REMOTE_CONTROL) {
+                    /*
+                     * With this instruction, the valve opening level will be set with the level
+                     * currently written on the dashboard. Otherwise, the valve opening level would
+                     * have been set with the last level read from the dashboard when this task was in
+                     * REMOTE_CONTROL state, causing a mismatch with the dashboard.
+                     */
+                    levelFromDashboard = lastValveLevel;
+                }
             }
             break;
         case LOCAL_MANUAL:
@@ -55,7 +64,7 @@ void SystemModeTask::start() {
 
 void SystemModeTask::printAndSetValveLevel(const int level) {
     valve->setLevel(level);
-    if (!fromDashboard && lastValveLevel != level) {
+    if (!fromDashboard && lastValveLevel != level) { // TODO: change check on fromDashboard with the actual state
         Serial.println("VALVE_LVL=" + String(level));
         lastValveLevel = level;
     }
