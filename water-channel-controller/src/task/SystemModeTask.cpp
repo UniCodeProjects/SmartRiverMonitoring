@@ -57,6 +57,11 @@ void SystemModeTask::start() {
             printAndSetValveLevel(levelFromDashboard);
             if (isAutomaticMode) {
                 state = AUTOMATIC;
+                /*
+                 * lastValveLevel is set to a dummy value in order to assure that the valve opening level
+                 * will be sent to the server at the next cycle
+                 */
+                lastValveLevel = -1;
             }
             break;
     }
