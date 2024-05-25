@@ -14,6 +14,7 @@
 #define HIGH_OPENING_LEVEL 50
 #define CRITIC_OPENING_LEVEL 100
 
+// static variable used to send the valve opening level on the serial line only when it changes.
 static int lastValveLevel;
 
 SystemModeTask::SystemModeTask(LiquidCrystal_I2C* const monitor, ValveKnob* const knob, Valve* const valve, const int period) : TaskImpl(period) {
