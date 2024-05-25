@@ -64,7 +64,7 @@ void SystemModeTask::start() {
 
 void SystemModeTask::printAndSetValveLevel(const int level) {
     valve->setLevel(level);
-    if (!fromDashboard && lastValveLevel != level) { // TODO: change check on fromDashboard with the actual state
+    if (state != REMOTE_CONTROL && lastValveLevel != level) {
         Serial.println("VALVE_LVL=" + String(level));
         lastValveLevel = level;
     }
